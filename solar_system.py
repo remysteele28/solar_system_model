@@ -1,26 +1,13 @@
-%pip install -q matplotlib
-
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import json                                                                                                                 # converts java object to python object
 import requests                                                                                                             # requests data from API
-from matplotlib.patches import Ellipse, Circle, PathPatch
 from ipywidgets import interact, interactive, fixed, interact_manual, widgets
 import ipywidgets as widgets
-import math
 
-plt.rcParams['axes.facecolor'] = 'black'                                                                                    # Black background on plot
-
-def c(x):
+def c(x):                                                                                                                   # Create random color
     return [np.random.default_rng(x**2+1).random(), np.random.default_rng(x**2+2).random(), np.random.default_rng(x**2+13).random()]
-
-def stars(plt,Zoom):
-    N = 300000
-    n = N*(1-.997*(Zoom-25)/4400)
-    x = (np.random.default_rng(5).random(int(n))-1/2)*9e9
-    y = (np.random.default_rng(6).random(int(n))-1/2)*9e9
-    plt.scatter(x,y,color='w',s=.2,alpha=.4*np.random.default_rng(7).random(int(n)))
 
 def stars3D(ax,Zoom):
     N = 300000
@@ -55,13 +42,13 @@ class Vector:
         return '({x}, {y}, {z})'.format(x=self.x, y=self.y, z=self.z)
 
     def abs(self):
-        return math.sqrt(self.x*self.x + self.y*self.y + self.z*self.z)
+        return np.sqrt(self.x*self.x + self.y*self.y + self.z*self.z)
 
 def mulAdd(v1, x1, v2, x2):
     return v1 * x1 + v2 * x2
 
 def rotate(i, j, alpha):
-    return [mulAdd(i,math.cos(alpha),j,math.sin(alpha)), mulAdd(i,-math.sin(alpha),j,math.cos(alpha))]
+    return [mulAdd(i,np.cos(alpha),j,np.sin(alpha)), mulAdd(i,-np.sin(alpha),j,np.cos(alpha))]
 
 def orbitalStateVectors(semimajorAxis, eccentricity, inclination, longitudeOfAscendingNode, argumentOfPeriapsis, trueAnomaly):
     i = Vector(1, 0, 0)
@@ -79,8 +66,8 @@ def orbitalStateVectors(semimajorAxis, eccentricity, inclination, longitudeOfAsc
 
     l = 2.0 if (eccentricity == 1.0) else 1.0 - eccentricity * eccentricity
     l *= semimajorAxis
-    c = math.cos(trueAnomaly)
-    s = math.sin(trueAnomaly)
+    c = np.cos(trueAnomaly)
+    s = np.sin(trueAnomaly)
     r = l / (1.0 + eccentricity * c)
     rprime = s * r * r / l
     position = mulAdd(i, c, j, s) * r
